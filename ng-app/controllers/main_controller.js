@@ -8,7 +8,7 @@ app.controller(
             $scope.images = Image.query();
             $scope.imageSrc = null;
             $scope.enabled = true;
-            $scope.colorArray = ['#FF0000', '#00FF00'];
+            $scope.colorArray = ['#00FF00'];
             $scope.activePolygon = 0;
             $scope.points = [[]];
             $scope.poly_height = 800;

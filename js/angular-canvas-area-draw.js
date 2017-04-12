@@ -171,7 +171,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 x = mousePos.x; y = mousePos.y;
                 for (var i = 0; i < points.length; ++i) {
                     dis = Math.sqrt(Math.pow(x - points[i][0], 2) + Math.pow(y - points[i][1], 2));
-                    if(minDisIndex == -1 || minDis > dis) {
+                    if(minDisIndex === -1 || minDis > dis) {
                         minDis = dis;
                         minDisIndex = i;
                     }
@@ -226,7 +226,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 ctx.globalCompositeOperation = 'destination-over';
                 ctx.fillStyle = 'rgb(255,255,255)';
                 ctx.strokeStyle = scope.palette[p % scope.palette.length];
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 2;
 
                 ctx.beginPath();
                 // ctx.moveTo(points[0], points[1]);
@@ -240,7 +240,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 ctx.closePath();
 
                 var fillColor = ctrl.hexToRgb(ctx.strokeStyle);
-                ctx.fillStyle = 'rgba(' + fillColor.r + ',' + fillColor.g + ',' + fillColor.b + ',0.3)';
+                ctx.fillStyle = 'rgba(' + fillColor.r + ',' + fillColor.g + ',' + fillColor.b + ',0.2)';
                 ctx.fill();
                 ctx.stroke();
             };
