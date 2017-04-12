@@ -225,23 +225,21 @@ polyDraw.directive('ngPolyDraw', [function () {
 
                 ctx.globalCompositeOperation = 'destination-over';
                 ctx.fillStyle = 'rgb(255,255,255)';
-                ctx.strokeStyle = scope.palette[p];
+                ctx.strokeStyle = scope.palette[p % scope.palette.length];
                 ctx.lineWidth = 1;
 
                 ctx.beginPath();
                 // ctx.moveTo(points[0], points[1]);
                 for (var i = 0; i < points.length; ++i) {
-                    if(scope.active == p) {
+                    if (scope.active === p) {
                         ctx.fillRect(points[i][0] - 2, points[i][1] - 2, 4, 4);
                         ctx.strokeRect(points[i][0] - 2, points[i][1] - 2, 4, 4);
                     }
                     ctx.lineTo(points[i][0], points[i][1]);
                 }
                 ctx.closePath();
-                if(!scope.palette[p]) {
-                    scope.palette[p] =  '#'+(function lol(m,s,c){return s[m.floor(m.random() * s.length)] + (c && lol(m,s,c-1));})(Math,'0123456789ABCDEF',4)
-                }
-                var fillColor = ctrl.hexToRgb(scope.palette[p]);
+
+                var fillColor = ctrl.hexToRgb(ctx.strokeStyle);
                 ctx.fillStyle = 'rgba(' + fillColor.r + ',' + fillColor.g + ',' + fillColor.b + ',0.3)';
                 ctx.fill();
                 ctx.stroke();
