@@ -224,7 +224,9 @@ polyDraw.directive('ngPolyDraw', [function () {
 
             scope.draw = function() {
 
-                // this seems necessary for the canvas to update properly, but don't know why?
+                // re-initialize canvas pixels by resetting the width,
+                // could use clearRect to just refresh the region
+                //noinspection SillyAssignmentJS
                 ctx.canvas.width = ctx.canvas.width;
 
                 if(scope.points.length > 0) {
