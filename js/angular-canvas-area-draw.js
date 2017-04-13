@@ -100,6 +100,8 @@ polyDraw.directive('ngPolyDraw', [function () {
 
                 scope.resize = function () {
                     $canvas.attr('height', settings.height).attr('width', settings.width);
+                    settings.img_scale_x = this.width / settings.width;
+                    settings.img_scale_y = this.height / settings.height;
                 };
                 $(image).load(scope.resize);
 
@@ -119,8 +121,13 @@ polyDraw.directive('ngPolyDraw', [function () {
                     e.offsetY = (e.pageY - $(e.target).offset().top);
                 }
                 var points = scope.points[scope.active];
-                points[activePoint][0] = Math.round(e.offsetX);
-                points[activePoint][1] = Math.round(e.offsetY);
+                points[activePoint] = [
+                    Math.round(e.offsetX),
+                    Math.round(e.offsetY),
+                    Math.floor(e.offsetX * settings.img_scale_x),
+                    Math.ceil(e.offsetY * settings.img_scale_y)
+                ];
+
                 scope.record();
                 scope.draw();
             };
@@ -196,7 +203,16 @@ polyDraw.directive('ngPolyDraw', [function () {
                     }
                 }
 
-                points.splice(insertAt, 0, [Math.round(x), Math.round(y)]);
+                points.splice(
+                    insertAt,
+                    0,
+                    [
+                        Math.round(x),
+                        Math.round(y),
+                        Math.floor(x * settings.img_scale_x),
+                        Math.ceil(y * settings.img_scale_y)
+                    ]
+                );
                 activePoint = insertAt;
                 element.on('mousemove', scope.move);
 
@@ -207,18 +223,20 @@ polyDraw.directive('ngPolyDraw', [function () {
             };
 
             scope.draw = function() {
+
+                // this seems necessary for the canvas to update properly, but don't know why?
                 ctx.canvas.width = ctx.canvas.width;
+
                 if(scope.points.length > 0) {
                     scope.drawSingle(scope.points[scope.active], scope.active);
                 }
                 for(var p = 0; p < scope.points.length; ++p) {
                     var points = scope.points[p];
-                    if (points.length == 0 || scope.active == p) {
+                    if (points.length === 0 || scope.active === p) {
                         continue;
                     }
                     scope.drawSingle(points, p);
                 }
-
             };
 
             scope.drawSingle = function (points, p) {
