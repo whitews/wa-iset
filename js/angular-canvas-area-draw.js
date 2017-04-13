@@ -174,6 +174,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                     e.offsetX = (e.pageX - $(e.target).offset().left);
                     e.offsetY = (e.pageY - $(e.target).offset().top);
                 }
+
                 var mousePos = ctrl.getMousePos($canvas[0], e);
                 x = mousePos.x; y = mousePos.y;
                 for (var i = 0; i < points.length; ++i) {
@@ -189,7 +190,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                     return false;
                 }
 
-                for (var i = 0; i < points.length; ++i) {
+                for (i = 0; i < points.length; ++i) {
                     if (i > 1) {
                         lineDis = ctrl.dotLineLength(
                             x, y,
@@ -269,7 +270,7 @@ polyDraw.directive('ngPolyDraw', [function () {
                 scope.$apply();
             };
 
-            scope.$watch('points', function (newVal, oldVal) {
+            scope.$watch('points', function () {
                 scope.draw();
             }, true);
 
