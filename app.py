@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, abort, send_file, send_from_directory, request
-from isi_lib import utils
+from ise_lib import utils
 import cv2
-import numpy as np
+import json
 
 app = Flask(__name__, static_folder='html')
 
@@ -74,12 +74,9 @@ def get_image(img_id):
     return send_file(img_path, mimetype=mime_type)
 
 
-@app.route('/api/images/<int:img_id>/id_region', methods=['GET'])
-def get_region_id(img_id):
-    x = int(request.args.get('x'))
-    y = int(request.args.get('y'))
-    w = int(request.args.get('w'))
-    h = int(request.args.get('h'))
+@app.route('/api/images/<int:img_id>/train/region', methods=['POST'])
+def post_training_sub_region(img_id):
+    points = json.loads(request.data)
 
     img = [img for img in images if img['id'] == img_id]
     if len(img) == 0:
@@ -90,32 +87,11 @@ def get_region_id(img_id):
     img_file = '.'.join([img['name'], 'tif'])
     img_path = '/'.join(['data', 'orig-imgs', img_file])
 
-    trained_model, class_map = utils.get_trained_model(
-        img_file,
-        classifier='svc',
-        cached=True
-    )
-
     cv_img = cv2.imread(img_path)
-    hsv_image = cv2.cvtColor(np.array(cv_img), cv2.COLOR_BGR2HSV)
 
-    input_dict = {
-        'region': hsv_image[y:y+h, x:x+w, :],
-        'model': trained_model,
-        'class_map': class_map
-    }
+    success = utils.extract_regions(cv_img, img_file, points['points'])
 
-    # identify best class for region
-    predicted_class, probabilities = utils.predict(input_dict)
-
-    if probabilities is not None:
-        prob_str = "\n".join(
-            ["%s%9.2f%%" % (p[0], p[1] * 100.0) for p in probabilities]
-        )
-    else:
-        prob_str = ''
-
-    return jsonify({'predicted_class': predicted_class, 'probabilities': probabilities})
+    return jsonify({'response': success})
 
 
 if __name__ == '__main__':

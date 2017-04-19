@@ -4,7 +4,8 @@ app.controller(
         '$scope',
         '$timeout',
         'Image',
-        function ($scope, $timeout, Image) {
+        'Train',
+        function ($scope, $timeout, Image, Train) {
             $scope.images = Image.query();
             $scope.imageSrc = null;
             $scope.enabled = true;
@@ -18,6 +19,7 @@ app.controller(
                 // $scope.$broadcast('ngAreas:remove_all', {});
                 $scope.imageSrc = "http://localhost:5000/api/images/" + item.id + "?type=jpg";
                 $scope.current_image_name = item.name;
+                $scope.current_image_id = item.id;
             };
 
             $scope.undo = function(){
@@ -46,6 +48,15 @@ app.controller(
 
             $scope.delete_all_regions = function () {
                 $scope.$broadcast("ngAreas:remove_all");
+            };
+
+            $scope.post_regions = function () {
+                Train.save(
+                    { 'id': $scope.current_image_id },
+                    {
+                        'points': $scope.points
+                    }
+                )
             };
         }
     ]

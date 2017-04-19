@@ -8,9 +8,9 @@ service.factory('Image', ['$resource', function ($resource) {
             {}
         );
     }]
-).factory('Region', ['$resource', function ($resource) {
+).factory('Train', ['$resource', function ($resource) {
         return  $resource(
-            '/api/images/' + ':id' + '/id_region',
+            '/api/images/' + ':id' + '/train/region',
             {},
             {}
         );
